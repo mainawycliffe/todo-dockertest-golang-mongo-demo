@@ -3,7 +3,7 @@ package todos
 import (
 	"context"
 
-	"github.com/mainawycliffe/todo-dockertest-golang-mongo/model"
+	"github.com/mainawycliffe/todo-dockertest-golang-mongo-demo/model"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 

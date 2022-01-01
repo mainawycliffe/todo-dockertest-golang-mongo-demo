@@ -1,4 +1,4 @@
-module github.com/mainawycliffe/todo-dockertest-golang-mongo
+module github.com/mainawycliffe/todo-dockertest-golang-mongo-demo
 
 go 1.17
 
