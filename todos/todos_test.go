@@ -11,6 +11,7 @@ import (
 	"github.com/mainawycliffe/todo-dockertest-golang-mongo-demo/model"
 	"github.com/ory/dockertest/v3"
 	"github.com/stretchr/testify/assert"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -71,26 +72,41 @@ func TestAddTodo(t *testing.T) {
 	todos := Todos{
 		client: db,
 	}
+	createdAt := primitive.Timestamp{
+		T: uint32(time.Now().Unix()),
+	}
 	todo := model.Todo{
 		Todo:      "test",
 		IsDone:    false,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: createdAt,
+		UpdatedAt: createdAt,
 	}
+	// add todo
 	todo, err := todos.AddTodo(todo)
+	// assert error is nil
 	assert.Nil(t, err)
+	// assert todo ID is not not nil
 	assert.NotNil(t, todo.ID)
+	// fetch todo from the database
+	todoGet, err := todos.GetTodo(todo.ID.Hex())
+	// assert error is nil
+	assert.Nil(t, err)
+	// assert todo is equal to the todo returned from the database
+	assert.Equal(t, todoGet, todo)
 }
 
 func TestDeleteTodo(t *testing.T) {
 	todos := Todos{
 		client: db,
 	}
+	createdAt := primitive.Timestamp{
+		T: uint32(time.Now().Unix()),
+	}
 	todo := model.Todo{
 		Todo:      "Test Delete Todo",
 		IsDone:    false,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: createdAt,
+		UpdatedAt: createdAt,
 	}
 	todoAdd, err := todos.AddTodo(todo)
 	assert.Nil(t, err)
@@ -102,11 +118,14 @@ func TestGetTodo(t *testing.T) {
 	todos := Todos{
 		client: db,
 	}
+	createdAt := primitive.Timestamp{
+		T: uint32(time.Now().Unix()),
+	}
 	todo := model.Todo{
 		Todo:      "Test Get Todo",
 		IsDone:    false,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: createdAt,
+		UpdatedAt: createdAt,
 	}
 	todoAdd, err := todos.AddTodo(todo)
 	assert.Nil(t, err)
@@ -119,11 +138,14 @@ func TestGetTodos(t *testing.T) {
 	todos := Todos{
 		client: db,
 	}
+	createdAt := primitive.Timestamp{
+		T: uint32(time.Now().Unix()),
+	}
 	todo := model.Todo{
 		Todo:      "Test Get Todos",
 		IsDone:    false,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: createdAt,
+		UpdatedAt: createdAt,
 	}
 	todoAdd, err := todos.AddTodo(todo)
 	assert.Nil(t, err)
@@ -137,11 +159,14 @@ func TestToggleTodo(t *testing.T) {
 	todos := Todos{
 		client: db,
 	}
+	createdAt := primitive.Timestamp{
+		T: uint32(time.Now().Unix()),
+	}
 	todo := model.Todo{
-		Todo:      "Test Get Todo",
+		Todo:      "Test Toggle Todo",
 		IsDone:    false,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: createdAt,
+		UpdatedAt: createdAt,
 	}
 	todoAdd, err := todos.AddTodo(todo)
 	assert.Nil(t, err)
