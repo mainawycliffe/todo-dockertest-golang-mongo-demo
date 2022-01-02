@@ -6,8 +6,11 @@ import (
 	"log"
 	"os"
 	"testing"
+	"time"
 
+	"github.com/mainawycliffe/todo-dockertest-golang-mongo-demo/model"
 	"github.com/ory/dockertest/v3"
+	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -63,3 +66,71 @@ func TestMain(m *testing.M) {
 	// Exit
 	os.Exit(exitCode)
 }
+
+func TestAddTodo(t *testing.T) {
+	todos := Todos{
+		client: db,
+	}
+	todo := model.Todo{
+		Todo:      "test",
+		IsDone:    false,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	todo, err := todos.AddTodo(todo)
+	assert.Nil(t, err)
+	assert.NotNil(t, todo.ID)
+}
+
+func TestDeleteTodo(t *testing.T) {
+	todos := Todos{
+		client: db,
+	}
+	todo := model.Todo{
+		Todo:      "Test Delete Todo",
+		IsDone:    false,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	todoAdd, err := todos.AddTodo(todo)
+	assert.Nil(t, err)
+	err = todos.DeleteTodo(todoAdd.ID.Hex())
+	assert.Nil(t, err)
+}
+
+func TestGetTodo(t *testing.T) {
+	todos := Todos{
+		client: db,
+	}
+	todo := model.Todo{
+		Todo:      "Test Get Todo",
+		IsDone:    false,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	todoAdd, err := todos.AddTodo(todo)
+	assert.Nil(t, err)
+	todoGet, err := todos.GetTodo(todoAdd.ID.Hex())
+	assert.Nil(t, err)
+	assert.Equal(t, todoGet.Todo, todo.Todo)
+}
+
+func TestGetTodos(t *testing.T) {
+	todos := Todos{
+		client: db,
+	}
+	todo := model.Todo{
+		Todo:      "Test Get Todos",
+		IsDone:    false,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	todoAdd, err := todos.AddTodo(todo)
+	assert.Nil(t, err)
+	assert.NotNil(t, todoAdd.ID)
+	todoList, err := todos.GetTodos()
+	assert.Nil(t, err)
+	assert.GreaterOrEqual(t, len(todoList), 1)
+}
+
+// func TestToggleTodo(t *testing.T) {}
