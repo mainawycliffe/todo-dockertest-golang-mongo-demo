@@ -8,8 +8,8 @@ import (
 
 type Todo struct {
 	ID        primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	Todo      string             `json:"text" bson:"text"`
-	CreatedAt time.Time          `json:"created_at" bson:"created_at"`
-	UpdatedAt time.Time          `json:"updated_at" bson:"updated_at"`
-	IsDone    bool               `json:"is_done" bson:"is_done"`
+	Todo      string             `json:"text" bson:"text,omitempty"`
+	CreatedAt time.Time          `json:"createdAt" bson:"createdAt,omitempty"`
+	UpdatedAt time.Time          `json:"updatedAt" bson:"updatedAt,omitempty"`
+	IsDone    bool               `json:"isDone" bson:"isDone,omitempty"`
 }
