@@ -58,6 +58,22 @@ func (todos *Todos) GetTodos() ([]model.Todo, error) {
 	return todoList, nil
 }
 
-func (todos *Todos) ToggleTodo(todo model.Todo) error {
-	panic("not implemented")
+func (todos *Todos) ToggleTodo(id string) error {
+	collection := todos.client.Database("todos").Collection("todos")
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+	todo, err := todos.GetTodo(id)
+	if err != nil {
+		return err
+	}
+	_, err = collection.UpdateOne(context.Background(), bson.M{
+		"_id": objectID,
+	}, bson.M{
+		"$set": bson.M{
+			"isDone": !todo.IsDone,
+		},
+	})
+	return err
 }

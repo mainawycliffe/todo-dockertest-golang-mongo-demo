@@ -133,4 +133,21 @@ func TestGetTodos(t *testing.T) {
 	assert.GreaterOrEqual(t, len(todoList), 1)
 }
 
-// func TestToggleTodo(t *testing.T) {}
+func TestToggleTodo(t *testing.T) {
+	todos := Todos{
+		client: db,
+	}
+	todo := model.Todo{
+		Todo:      "Test Get Todo",
+		IsDone:    false,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	todoAdd, err := todos.AddTodo(todo)
+	assert.Nil(t, err)
+	err = todos.ToggleTodo(todoAdd.ID.Hex())
+	assert.Nil(t, err)
+	todoGet, err := todos.GetTodo(todoAdd.ID.Hex())
+	assert.Nil(t, err)
+	assert.NotEqual(t, todoGet.IsDone, todo.IsDone)
+}
