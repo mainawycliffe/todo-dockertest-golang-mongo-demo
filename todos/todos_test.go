@@ -64,6 +64,11 @@ func TestMain(m *testing.M) {
 		log.Fatalf("Could not purge resource: %s", err)
 	}
 
+	// disconnect mongodb client
+	if err = db.Disconnect(context.TODO()); err != nil {
+		panic(err)
+	}
+
 	// Exit
 	os.Exit(exitCode)
 }
