@@ -10,6 +10,7 @@ import (
 
 	"github.com/mainawycliffe/todo-dockertest-golang-mongo-demo/model"
 	"github.com/ory/dockertest/v3"
+	"github.com/ory/dockertest/v3/docker"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -31,7 +32,17 @@ func TestMain(m *testing.M) {
 		"MONGO_INITDB_ROOT_USERNAME=" + MONGO_INITDB_ROOT_USERNAME,
 		"MONGO_INITDB_ROOT_PASSWORD=" + MONGO_INITDB_ROOT_PASSWORD,
 	}
-	resource, err := pool.Run("mongo", "5.0", environmentVariables)
+	resource, err := pool.RunWithOptions(&dockertest.RunOptions{
+		Repository: "mongo",
+		Tag:        "5.0",
+		Env:        environmentVariables,
+	}, func(config *docker.HostConfig) {
+		// set AutoRemove to true so that stopped container goes away by itself
+		config.AutoRemove = true
+		config.RestartPolicy = docker.RestartPolicy{
+			Name: "no",
+		}
+	})
 	if err != nil {
 		log.Fatalf("Could not start resource: %s", err)
 	}
@@ -52,8 +63,6 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
 	}
-
-	// seed data
 
 	// Run tests
 	exitCode := m.Run()
